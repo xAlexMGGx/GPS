@@ -188,7 +188,20 @@ class Grafo:
 
 
 class Vertice():
-    pass
+    def __init__(self,aristas=None, coordenadas=None):
+        self.aristas = aristas
+        self.coordenadas = coordenadas
+    
+    def add_aristas(self, cruces):
+        pass
+
+    def add_coordenadas(self, cruces):
+        pass
+
 
 class Arista():
-    pass
+    def __init__(self,origen=None,destino=None,peso=None,datos=None):
+        self.origen = origen
+        self.destino = destino
+        self.peso = peso
+        self.datos = datos
