@@ -22,7 +22,6 @@ class Grafo:
         self.vertices_ids = vertices_ids
         self.aristas = aristas
         self.vertices_data = vertices_data
-        pass
 
     #### Operaciones básicas del TAD ####
     def es_dirigido(self) -> bool:
@@ -40,7 +39,7 @@ class Grafo:
         Returns: None
         """
         self.vertices_ids.append(v.id)
-        self.vertices_data[v.id] = v
+        self.vertices_data[v.coordenadas] = v
 
     def agregar_arista(self, s: object, t: object, data: object, weight: float = 1) -> None:
         """ Si los objetos s y t son vértices del grafo, agrega
@@ -65,7 +64,7 @@ class Grafo:
         Returns: None
         """
         self.vertices_ids.remove(v.id)
-        self.vertices_data.pop(v.id)
+        self.vertices_data.pop(v.coordenadas)
 
     def eliminar_arista(self, s: object, t: object) -> None:
         """ Si los objetos s y t son vértices del grafo y existe
