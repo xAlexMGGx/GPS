@@ -10,7 +10,7 @@ INFTY = sys.float_info.max
 class Grafo:
     # Diseñar y construirl a clase grafo
 
-    def __init__(self, dirigido=False, vertices_ids=[], aristas=[], vertices_data={}):
+    def __init__(self, dirigido=False, vertices_ids=[], aristas=[], vertices_data={}, vertices = []):
         """ Crea un grafo dirigido o no dirigido.
 
         Args:
@@ -22,6 +22,7 @@ class Grafo:
         self.vertices_ids = vertices_ids
         self.aristas = aristas
         self.vertices_data = vertices_data
+        self.vertices = vertices
 
     #### Operaciones básicas del TAD ####
     def es_dirigido(self) -> bool:
@@ -30,7 +31,7 @@ class Grafo:
         Args: None
         Returns: True si el grafo es dirigido, False si no.
         """
-        pass
+        return self.dirigido
 
     def agregar_vertice(self, v: object) -> None:
         """ Agrega el vértice v al grafo.
@@ -55,6 +56,7 @@ class Grafo:
         Returns: None
         """
         self.aristas.append((s.id, t.id, {"data": data, "weight": weight}))
+        return None
 
     def eliminar_vertice(self, v: object) -> None:
         """ Si el objeto v es un vértice del grafo lo elimiina.
@@ -65,6 +67,7 @@ class Grafo:
         """
         self.vertices_ids.remove(v.id)
         self.vertices_data.pop(v.coordenadas)
+        return None
 
     def eliminar_arista(self, s: object, t: object) -> None:
         """ Si los objetos s y t son vértices del grafo y existe
@@ -79,6 +82,7 @@ class Grafo:
         for arista in self.aristas:
             if s.id in arista and t.id in arista:
                 self.aristas.remove(arista)
+        return None
 
     def obtener_arista(self, s: object, t: object) -> Tuple[object, float] or None:
         """ Si los objetos s y t son vértices del grafo y existe
@@ -106,7 +110,13 @@ class Grafo:
         adyacentes a u si u es un vértice del grafo y None en caso
         contrario
         """
-        pass
+        if u in self.vertices:
+            lista_adyacencia = []
+            for arista in self.aristas:
+                if u in arista:
+                    lista_adyacencia.append(arista[1])
+            return lista_adyacencia
+        return None
 
     #### Grados de vértices ####
     def grado_saliente(self, v: object) -> int or None:
