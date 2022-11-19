@@ -6,6 +6,12 @@ import heapq
 
 INFTY = sys.float_info.max
 
+class Vertice:
+    def __init__(self, id=None, calles=[], nodos_adyacentes=[], coordenadas=()):
+        self.id = id
+        self.calles = calles
+        self.nodos_adyacentes = nodos_adyacentes
+        self.coordenadas = coordenadas
 
 class Grafo:
     # Diseñar y construirl a clase grafo
@@ -114,12 +120,12 @@ class Grafo:
             lista_adyacencia = []
             for arista in self.aristas:
                 if u in arista:
-                    lista_adyacencia.append(arista[1])
+                    lista_adyacencia.append(arista[1]) if u == arista[0] else lista_adyacencia.append(arista[0])
             return lista_adyacencia
         return None
 
     #### Grados de vértices ####
-    def grado_saliente(self, v: object) -> int or None:
+    def grado_saliente(self, u: Vertice) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado saliente.
         Si no, devuelve None.
@@ -128,9 +134,15 @@ class Grafo:
         Returns: El grado saliente (int) si el vértice existe y
         None en caso contrario.
         """
-        pass
+        if u in self.vertices:
+            lista_entrante = []
+            for aristas in self.aristas:
+                if u == aristas[0]:
+                    lista_entrante.append(aristas[1])
+            return len(aristas)
+        return None
 
-    def grado_entrante(self, v: object) -> int or None:
+    def grado_entrante(self, u: Vertice) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado entrante.
         Si no, devuelve None.
@@ -139,9 +151,15 @@ class Grafo:
         Returns: El grado entrante (int) si el vértice existe y
         None en caso contrario.
         """
-        pass
+        if u in self.vertices:
+            lista_entrante = []
+            for aristas in self.aristas:
+                if u == aristas[1]:
+                    lista_entrante.append(aristas[0])
+            return len(aristas)
+        return None
 
-    def grado(self, v: object) -> int or None:
+    def grado(self, u: Vertice) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado si el grafo no es dirigido y su grado saliente si
         es dirigido.
@@ -151,7 +169,12 @@ class Grafo:
         Returns: El grado (int) o grado saliente (int) según corresponda
         si el vértice existe y None en caso contrario.
         """
-        pass
+        if u in self.vertices:
+            if self.es_dirigido():
+                return self.grado_saliente(u)
+            else:
+                return len(u.nodos_adyacentes)
+        return None
 
     #### Algoritmos ####
     def dijkstra(self, origen: object) -> Dict[object, object]:
@@ -202,9 +225,4 @@ class Grafo:
         pass
 
 
-class Vertice:
-    def __init__(self, id=None, calles=[], nodos_adyacentes=[], coordenadas=()):
-        self.id = id
-        self.calles = calles
-        self.nodos_adyacentes = nodos_adyacentes
-        self.coordenadas = coordenadas
+
