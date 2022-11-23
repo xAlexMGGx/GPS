@@ -1,6 +1,7 @@
 from typing import List, Tuple, Dict
 import networkx as nx
 import sys
+import math
 
 import heapq
 
@@ -186,7 +187,22 @@ class Grafo:
         Returns: Devuelve un diccionario que indica, para cada vértice alcanzable
         desde "origen", qué vértice es su padre en el árbol abarcador mínimo.
         """
-        pass
+        padre = {i: None for i in self.vertices}
+        visitados = {i: False for i in self.vertices}
+        distancia = {i: math.inf for i in self.vertices}
+        distancia[origen] = 0
+        q = [origen]
+        while q:
+            u = q.pop(0)
+            if not visitados[u]:
+                visitados[u] = True
+                for v in self.lista_adyacencia(u):
+                    if distancia[v] > distancia[u] + self.obtener_arista(u, v)[1]:
+                        distancia[v] = distancia[u] + self.obtener_arista(u, v)[1]
+                        padre[v] = u
+                        q.append(v)
+        return padre
+
 
     def camino_minimo(self, origen: object, destino: object) -> List[object]:
         pass
