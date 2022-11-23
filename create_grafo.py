@@ -238,7 +238,12 @@ class Grafo:
         no dirigido y un objeto DiGraph si es dirigido. En ambos casos,
         los vértices y las aristas son los contenidos en el grafo dado.
         """
-        pass
-
+        if self.dirigido:
+            G2 = nx.DiGraph()
+        else:
+            G2 = nx.Graph()
+        G2.add_nodes_from(self.vertices_ids)
+        G2.add_edges_from(self.aristas)
+        return G2
 
 
