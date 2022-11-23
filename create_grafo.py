@@ -215,7 +215,21 @@ class Grafo:
         Returns: Devuelve un diccionario que indica, para cada vértice del
         grafo, qué vértice es su padre en el árbol abarcador mínimo.
         """
-        pass
+        padre = {i: None for i in self.vertices}
+        coste_minimo = {i: math.inf for i in self.vertices}
+        coste_minimo[self.vertices[0]] = 0
+        q = [self.vertices[0]]
+        while q:
+            # extraer el de coste mínimo
+            u = sorted(q, key=lambda x: coste_minimo[x]).pop(0)
+            for w in (set(self.lista_adyacencia(u)) & set(q)):
+                if coste_minimo[w] > self.obtener_arista(u, w)[1]:
+                    coste_minimo[w] = self.obtener_arista(u, w)[1]
+                    padre[w] = u
+                    # Actualizar peso de w a c(uw) en Q.
+        
+                    
+            
 
     def kruskal(self) -> List[Tuple[object, object]]:
         """ Calcula un Árbol Abarcador Mínimo para el grafo
