@@ -17,7 +17,7 @@ class Vertice:
 class Grafo:
     # Diseñar y construirl a clase grafo
 
-    def __init__(self, dirigido=False, vertices_ids=[], aristas=[], vertices_data={}, vertices = []):
+    def __init__(self, dirigido=False, vertices_ids=[], aristas=[], vertices_data={}):
         """ Crea un grafo dirigido o no dirigido.
 
         Args:
@@ -29,7 +29,7 @@ class Grafo:
         self.vertices_ids = vertices_ids
         self.aristas = aristas
         self.vertices_data = vertices_data
-        self.vertices = vertices
+        self.vertices = vertices_data.values()
 
     #### Operaciones básicas del TAD ####
     def es_dirigido(self) -> bool:
@@ -226,7 +226,7 @@ class Grafo:
                 if coste_minimo[w] > self.obtener_arista(u, w)[1]:
                     coste_minimo[w] = self.obtener_arista(u, w)[1]
                     padre[w] = u
-                    # Actualizar peso de w a c(uw) en Q.
+                    
         
                     
             
