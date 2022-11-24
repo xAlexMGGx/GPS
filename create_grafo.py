@@ -189,7 +189,7 @@ class Grafo:
         """
         padre = {i: None for i in self.vertices}
         visitados = {i: False for i in self.vertices}
-        distancia = {i: math.inf for i in self.vertices}
+        distancia = {i: INFTY for i in self.vertices}
         distancia[origen] = 0
         q = [origen]
         while q:
@@ -216,7 +216,7 @@ class Grafo:
         grafo, qué vértice es su padre en el árbol abarcador mínimo.
         """
         padre = {i: None for i in self.vertices}
-        coste_minimo = {i: math.inf for i in self.vertices}
+        coste_minimo = {i: INFTY for i in self.vertices}
         coste_minimo[self.vertices[0]] = 0
         q = [self.vertices[0]]
         while q:
@@ -240,7 +240,20 @@ class Grafo:
         de los pares de vértices del grafo
         que forman las aristas del arbol abarcador mínimo.
         """
-        pass
+        l = self.aristas
+        c = {}
+        for v in self.vertices:
+            c[v] = {v}
+        while l:
+            a = sorted(l, key=lambda x: x[2]['weight']).pop(0)
+            if c[a[0]] != c[a[1]]:
+                c[a[0]] = c[a[0]] | c[a[1]]
+                c[a[1]] = c[a[0]]
+            for w in c[a[0]]:
+                c[w] = c[a[0]]
+        return c
+
+
 
     #### NetworkX ####
     def convertir_a_NetworkX(self) -> nx.Graph or nx.DiGraph:
