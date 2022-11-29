@@ -30,6 +30,7 @@ class Grafo:
         self.vertices_ids = vertices_ids
         self.aristas = aristas
         self.vertices_coords = vertices_coords
+        self.vertices = []
 
     #### Operaciones básicas del TAD ####
     def es_dirigido(self) -> bool:
@@ -46,10 +47,14 @@ class Grafo:
         Args: v vértice que se quiere agregar
         Returns: None
         """
+        import random
         self.vertices_ids[v.id]= v
+        self.vertices.append(v)
         self.vertices_coords[v.coordenadas] = v
 
-    def agregar_arista(self, s: object, t: object, data: object, weight: float = 1) -> None:
+        
+
+    def agregar_arista(self, s: object, t: object, data: object = {'codigo':-1,'calle':'-1'}, weight: float = 1) -> None:
         """ Si los objetos s y t son vértices del grafo, agrega
         una orista al grafo que va desde el vértice s hasta el vértice t
         y le asocia los datos "data" y el peso weight.
@@ -62,7 +67,7 @@ class Grafo:
             weight: peso de la arista
         Returns: None
         """
-        self.aristas.append((s.id, t.id, {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}))
+        self.aristas.append((s, t, {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}))
         return None
 
     def eliminar_vertice(self, v: object) -> None:
@@ -87,7 +92,7 @@ class Grafo:
         Returns: None
         """
         for arista in self.aristas:
-            if s.id in arista and t.id in arista:
+            if s in arista and t in arista:
                 self.aristas.remove(arista)
         return None
 
@@ -103,7 +108,7 @@ class Grafo:
         "w" si la arista existe. None en caso contrario.
         """
         for arista in self.aristas:
-            if s.id in arista and t.id in arista:
+            if s in arista and t in arista:
                 return (arista[2]["Codigo"], arista[2]["Calle"], arista[2]["weight"])
         return None
 
@@ -117,11 +122,11 @@ class Grafo:
         adyacentes a u si u es un vértice del grafo y None en caso
         contrario
         """
-        if u.id in self.vertices_ids:
+        if u in self.vertices:
             lista_adyacencia = []
             for arista in self.aristas:
-                if u.id in arista:
-                    lista_adyacencia.append(arista[1]) if u.id == arista[0] else lista_adyacencia.append(arista[0])
+                if u in arista:
+                    lista_adyacencia.append(arista[1]) if u == arista[0] else lista_adyacencia.append(arista[0])
             return lista_adyacencia
         return None
 
@@ -187,31 +192,30 @@ class Grafo:
         Returns: Devuelve un diccionario que indica, para cada vértice alcanzable
         desde "origen", qué vértice es su padre en el árbol abarcador mínimo.
         """
-        # self.vertices = list(self.vertices_coords.values())
-        padre = {i: None for i in self.vertices_ids}
-        visitados = {i: False for i in self.vertices_ids}
-        distancia = {i: math.inf for i in self.vertices_ids}
-        distancia[origen.id] = 0
-        q = [origen.id]
+        padre = {i: None for i in self.vertices}
+        visitados = {i: False for i in self.vertices}
+        distancia = {i: math.inf for i in self.vertices}
+        distancia[origen] = 0
+        q = []
+        heapq.heappush(q, (0, origen.id))
         while q:
-            u = q.pop(0)
+            _, u = heapq.heappop(q)
+            u = self.vertices_ids[u]
             if visitados[u] == False:
                 visitados[u] = True
-                u = self.vertices_ids[u]
                 for v in self.lista_adyacencia(u):
-                    v = self.vertices_ids[v]
-                    if distancia[v.id] > distancia[u.id] + self.obtener_arista(u, v)[2]:
-                        distancia[v.id] = distancia[u.id] + self.obtener_arista(u, v)[2]
-                        padre[v.id] = u.id
-                        q.append(v.id)
+                    if distancia[v] > distancia[u] + self.obtener_arista(u, v)[2]:
+                        distancia[v] = distancia[u] + self.obtener_arista(u, v)[2]
+                        padre[v] = u
+                        heapq.heappush(q, (distancia[v], v.id))
         return padre
 
 
     def camino_minimo(self, origen: object, destino: object) -> List[object]:
         padre = self.dijkstra(origen)
-        if destino.id in padre:
-            camino = [destino.id]
-            while camino[0] != origen.id:
+        if destino in padre:
+            camino = [destino]
+            while camino[0] != origen:
                 camino.insert(0, padre[camino[0]])
             return camino
         return 'No hay camino'
@@ -227,18 +231,16 @@ class Grafo:
         padre = {i: None for i in self.vertices}
         coste_minimo = {i: INFTY for i in self.vertices}
         coste_minimo[self.vertices[0]] = 0
-        q = [self.vertices[0]]
+        q = self.vertices
         while q:
-            # extraer el de coste mínimo
-            u = sorted(q, key=lambda x: coste_minimo[x]).pop(0)
+            q = sorted(q, key=lambda x: coste_minimo[x], reverse=False)
+            u = q.pop(0)
             for w in (set(self.lista_adyacencia(u)) & set(q)):
-                if coste_minimo[w] > self.obtener_arista(u, w)[1]:
-                    coste_minimo[w] = self.obtener_arista(u, w)[1]
+                if coste_minimo[w] > self.obtener_arista(u, w)[2]:
+                    coste_minimo[w] = self.obtener_arista(u, w)[2]
                     padre[w] = u
-                    
-        
-                    
-            
+        return padre
+                             
 
     def kruskal(self) -> List[Tuple[object, object]]:
         """ Calcula un Árbol Abarcador Mínimo para el grafo
@@ -250,17 +252,20 @@ class Grafo:
         que forman las aristas del arbol abarcador mínimo.
         """
         l = self.aristas
+        aristas = []
         c = {}
         for v in self.vertices:
             c[v] = {v}
         while l:
-            a = sorted(l, key=lambda x: x[2]['weight']).pop(0)
+            l = sorted(l, key=lambda x: x[2]['weight'])
+            a = l.pop(0)
             if c[a[0]] != c[a[1]]:
+                aristas.append((a[0], a[1]))
                 c[a[0]] = c[a[0]] | c[a[1]]
                 c[a[1]] = c[a[0]]
             for w in c[a[0]]:
                 c[w] = c[a[0]]
-        return c
+        return aristas
 
 
 
@@ -279,7 +284,8 @@ class Grafo:
         else:
             G2 = nx.Graph()
         G2.add_nodes_from([i for i in self.vertices_ids])
-        G2.add_edges_from(self.aristas)
+        G2.add_edges_from([(i.id,j.id,data) for (i,j,data) in self.aristas])
+        
         return G2
 
 
