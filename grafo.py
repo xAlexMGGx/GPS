@@ -29,6 +29,7 @@ class Grafo:
         self.dirigido = dirigido
         self.vertices_ids = vertices_ids
         self.aristas = aristas
+        self.aristas2 = {}
         self.vertices_coords = vertices_coords
         self.vertices = []
 
@@ -68,6 +69,7 @@ class Grafo:
         Returns: None
         """
         self.aristas.append((s, t, {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}))
+        self.aristas2[(s, t)] = {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}
         return None
 
     def eliminar_vertice(self, v: object) -> None:
@@ -107,9 +109,11 @@ class Grafo:
         Returns: Una tupla (a,w) con los datos de la arista "a" y su peso
         "w" si la arista existe. None en caso contrario.
         """
-        for arista in self.aristas:
-            if s in arista and t in arista:
-                return (arista[2]["Codigo"], arista[2]["Calle"], arista[2]["weight"])
+        
+        if (s,t) in self.aristas2:
+            return (self.aristas2[(s,t)]["Codigo"], self.aristas2[(s,t)]["Calle"], self.aristas2[(s,t)]["weight"])
+        if (t,s) in self.aristas2:
+            return (self.aristas2[(t,s)]["Codigo"], self.aristas2[(t,s)]["Calle"], self.aristas2[(t,s)]["weight"])
         return None
 
     def lista_adyacencia(self, u: object) -> List[object] or None:
@@ -124,7 +128,7 @@ class Grafo:
         """
         if u in self.vertices:
             lista_adyacencia = []
-            for arista in self.aristas:
+            for arista in self.aristas2:
                 if u in arista:
                     lista_adyacencia.append(arista[1]) if u == arista[0] else lista_adyacencia.append(arista[0])
             return lista_adyacencia

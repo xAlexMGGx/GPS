@@ -75,3 +75,14 @@ nx.draw_networkx_edge_labels(aam, pos, edge_labels)
 
 plt.show()
 
+
+
+'''
+ar = {(u,v): data}
+ar = {(u,v): (u,v,data)}
+
+(s,t) en ar
+    obtener data
+(t,s) en ar
+    obtener data
+'''
