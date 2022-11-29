@@ -203,11 +203,14 @@ class Grafo:
             u = self.vertices_ids[u]
             if visitados[u] == False:
                 visitados[u] = True
-                for v in self.lista_adyacencia(u):
-                    if distancia[v] > distancia[u] + self.obtener_arista(u, v)[2]:
-                        distancia[v] = distancia[u] + self.obtener_arista(u, v)[2]
-                        padre[v] = u
-                        heapq.heappush(q, (distancia[v], v.id))
+                lst_u = self.lista_adyacencia(u)
+                for v in lst_u:
+                    if visitados[v] == False:
+                        dist_uv = self.obtener_arista(u, v)[2]
+                        if distancia[v] > distancia[u] + dist_uv:
+                            distancia[v] = distancia[u] + dist_uv
+                            padre[v] = u
+                            heapq.heappush(q, (distancia[v], v.id))
         return padre
 
 
