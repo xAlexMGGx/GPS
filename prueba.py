@@ -75,14 +75,7 @@ nx.draw_networkx_edge_labels(aam, pos, edge_labels)
 
 plt.show()
 
-
-
-'''
-ar = {(u,v): data}
-ar = {(u,v): (u,v,data)}
-
-(s,t) en ar
-    obtener data
-(t,s) en ar
-    obtener data
-'''
+e = [(1, 2), (2, 3), (3, 4)]  # list of edges
+G = nx.Graph(e)
+print(G.edges(data=True))
+print(G.nodes(data=True))

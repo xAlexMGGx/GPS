@@ -27,10 +27,10 @@ class Grafo:
         inicializado sin vértices ni aristas.
         """
         self.dirigido = dirigido
-        self.vertices_ids = vertices_ids
-        self.aristas = aristas
+        self.vertices_ids = {}
+        self.aristas = []
         self.aristas2 = {}
-        self.vertices_coords = vertices_coords
+        self.vertices_coords = {}
         self.vertices = []
 
     #### Operaciones básicas del TAD ####
@@ -44,16 +44,15 @@ class Grafo:
 
     def agregar_vertice(self, v: object) -> None:
         """ Agrega el vértice v al grafo.
-
+    
         Args: v vértice que se quiere agregar
         Returns: None
         """
-        import random
         self.vertices_ids[v.id]= v
         self.vertices.append(v)
-        self.vertices_coords[v.coordenadas] = v
-
-        
+        if v.coordenadas:
+            self.vertices_coords[v.coordenadas] = v
+        return None
 
     def agregar_arista(self, s: object, t: object, data: object = {'codigo':-1,'calle':'-1'}, weight: float = 1) -> None:
         """ Si los objetos s y t son vértices del grafo, agrega
@@ -68,8 +67,8 @@ class Grafo:
             weight: peso de la arista
         Returns: None
         """
-        self.aristas.append((s, t, {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}))
-        self.aristas2[(s, t)] = {"Codigo": data['codigo'], "Calle": data['calle'], "weight": weight}
+        self.aristas.append((s, t, {"codigo": data['codigo'], "calle": data['calle'], "weight": weight}))
+        self.aristas2[(s, t)] = {"codigo": data['codigo'], "calle": data['calle'], "weight": weight}
         return None
 
     def eliminar_vertice(self, v: object) -> None:
@@ -79,8 +78,11 @@ class Grafo:
         Args: v vértice que se quiere eliminar
         Returns: None
         """
-        self.vertices_ids.pop(v.id)
-        self.vertices_coords.pop(v.coordenadas)
+        if v in self.vertices:
+            self.vertices_ids.pop(v.id)
+            self.vertices.pop(v)
+            if v.coordenadas:
+                self.vertices_coords.pop(v.coordenadas)
         return None
 
     def eliminar_arista(self, s: object, t: object) -> None:
@@ -111,9 +113,9 @@ class Grafo:
         """
         
         if (s,t) in self.aristas2:
-            return (self.aristas2[(s,t)]["Codigo"], self.aristas2[(s,t)]["Calle"], self.aristas2[(s,t)]["weight"])
+            return (self.aristas2[(s,t)]["codigo"], self.aristas2[(s,t)]["calle"], self.aristas2[(s,t)]["weight"])
         if (t,s) in self.aristas2:
-            return (self.aristas2[(t,s)]["Codigo"], self.aristas2[(t,s)]["Calle"], self.aristas2[(t,s)]["weight"])
+            return (self.aristas2[(t,s)]["codigo"], self.aristas2[(t,s)]["calle"], self.aristas2[(t,s)]["weight"])
         return None
 
     def lista_adyacencia(self, u: object) -> List[object] or None:
@@ -135,7 +137,7 @@ class Grafo:
         return None
 
     #### Grados de vértices ####
-    def grado_saliente(self, u: Vertice) -> int or None:
+    def grado_saliente(self, u: object) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado saliente.
         Si no, devuelve None.
@@ -152,7 +154,7 @@ class Grafo:
             return len(aristas)
         return None
 
-    def grado_entrante(self, u: Vertice) -> int or None:
+    def grado_entrante(self, u: object) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado entrante.
         Si no, devuelve None.
@@ -169,7 +171,7 @@ class Grafo:
             return len(aristas)
         return None
 
-    def grado(self, u: Vertice) -> int or None:
+    def grado(self, u: object) -> int or None:
         """ Si el objeto u es un vértice del grafo, devuelve
         su grado si el grafo no es dirigido y su grado saliente si
         es dirigido.
