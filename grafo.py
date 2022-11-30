@@ -189,24 +189,20 @@ class Grafo:
         return None
 
     #### Algoritmos ####
-    def dijkstra(self, origen: object) -> Dict[object, object]:
-        """ Calcula un Árbol Abarcador Mínimo para el grafo partiendo
-        del vértice "origen" usando el algoritmo de Dijkstra. Calcula únicamente
-        el árbol de la componente conexa que contiene a "origen".
 
-        Args: origen vértice del grafo de origen
-        Returns: Devuelve un diccionario que indica, para cada vértice alcanzable
-        desde "origen", qué vértice es su padre en el árbol abarcador mínimo.
-        """
+    def dijkstra_parada(self,origen: object, destino: object) -> bool:
         padre = {i: None for i in self.vertices}
         visitados = {i: False for i in self.vertices}
         distancia = {i: math.inf for i in self.vertices}
         distancia[origen] = 0
+        
         q = []
         heapq.heappush(q, (0, origen.id))
         while q:
             _, u = heapq.heappop(q)
             u = self.vertices_ids[u]
+            if u == destino:
+                return padre
             if visitados[u] == False:
                 visitados[u] = True
                 lst_u = self.lista_adyacencia(u)
@@ -219,9 +215,20 @@ class Grafo:
                             heapq.heappush(q, (distancia[v], v.id))
         return padre
 
+    def dijkstra(self, origen: object) -> Dict[object, object]:
+        """ Calcula un Árbol Abarcador Mínimo para el grafo partiendo
+        del vértice "origen" usando el algoritmo de Dijkstra. Calcula únicamente
+        el árbol de la componente conexa que contiene a "origen".
+
+        Args: origen vértice del grafo de origen
+        Returns: Devuelve un diccionario que indica, para cada vértice alcanzable
+        desde "origen", qué vértice es su padre en el árbol abarcador mínimo.
+        """
+        return self.dijkstra_parada(origen, None)
+
 
     def camino_minimo(self, origen: object, destino: object) -> List[object]:
-        padre = self.dijkstra(origen)
+        padre = self.dijkstra_parada(origen, destino)
         if destino in padre:
             camino = [destino]
             while camino[0] != origen:
