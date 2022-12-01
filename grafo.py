@@ -180,10 +180,7 @@ class Grafo:
         si el vértice existe y None en caso contrario.
         """
         if u in self.vertices:
-            if self.es_dirigido():
-                return self.grado_saliente(u)
-            else:
-                return self.grado_saliente(u) + self.grado_entrante(u)
+            return self.grado_saliente(u)
         return None
 
     #### Algoritmos ####
@@ -246,15 +243,19 @@ class Grafo:
         coste_minimo = {i: INFTY for i in self.vertices}
         coste_minimo[self.vertices[0]] = 0
         q = []
-        for v in self.vertices:
-            heapq.heappush(q, (coste_minimo[v], v.id))
+        for key, value in coste_minimo.items():
+            heapq.heappush(q, (value, key.id))
         while q:
             _, u = heapq.heappop(q)
             u = self.vertices_ids[u]
-            for w in (set(self.lista_adyacencia(u)) & set(q)):
-                if coste_minimo[w] > self.obtener_arista(u, w)[2]:
-                    coste_minimo[w] = self.obtener_arista(u, w)[2]
-                    padre[w] = u
+            q_ids = {i[1] for i in q}
+            for w in set(self.lista_adyacencia(u)):
+                if w.id in q_ids:
+                    if coste_minimo[w] > self.obtener_arista(u, w)[2]:
+                        q.remove((coste_minimo[w], w.id))
+                        coste_minimo[w] = self.obtener_arista(u, w)[2]
+                        padre[w] = u
+                        heapq.heappush(q, (coste_minimo[w], w.id))
         return padre
                              
 
