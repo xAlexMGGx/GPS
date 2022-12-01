@@ -133,11 +133,7 @@ class Grafo:
         contrario
         """
         if u in self.vertices:
-            lista_adyacencia = []
-            for arista in self.aristas:
-                if u in arista:
-                    lista_adyacencia.append(arista[1]) if u == arista[0] else lista_adyacencia.append(arista[0])
-            return lista_adyacencia
+            return list(self.matriz_adyacencia[u])
         return None
 
     #### Grados de vértices ####
@@ -151,11 +147,7 @@ class Grafo:
         None en caso contrario.
         """
         if u in self.vertices:
-            lista_entrante = []
-            for aristas in self.aristas:
-                if u == aristas[0]:
-                    lista_entrante.append(aristas[1])
-            return len(aristas)
+            return len(self.lista_adyacencia(u))
         return None
 
     def grado_entrante(self, u: object) -> int or None:
@@ -168,11 +160,13 @@ class Grafo:
         None en caso contrario.
         """
         if u in self.vertices:
-            lista_entrante = []
-            for aristas in self.aristas:
-                if u == aristas[1]:
-                    lista_entrante.append(aristas[0])
-            return len(aristas)
+            if not self.es_dirigido:
+                return self.grado_saliente(u)
+            count = 0
+            for _, ady in self.matriz_adyacencia.items():
+                if u in ady:
+                    count += 1
+            return count
         return None
 
     def grado(self, u: object) -> int or None:
@@ -189,7 +183,7 @@ class Grafo:
             if self.es_dirigido():
                 return self.grado_saliente(u)
             else:
-                return len(u.nodos_adyacentes)
+                return self.grado_saliente(u) + self.grado_entrante(u)
         return None
 
     #### Algoritmos ####
@@ -251,10 +245,12 @@ class Grafo:
         padre = {i: None for i in self.vertices}
         coste_minimo = {i: INFTY for i in self.vertices}
         coste_minimo[self.vertices[0]] = 0
-        q = self.vertices
+        q = []
+        for v in self.vertices:
+            heapq.heappush(q, (coste_minimo[v], v.id))
         while q:
-            q = sorted(q, key=lambda x: coste_minimo[x], reverse=False)
-            u = q.pop(0)
+            _, u = heapq.heappop(q)
+            u = self.vertices_ids[u]
             for w in (set(self.lista_adyacencia(u)) & set(q)):
                 if coste_minimo[w] > self.obtener_arista(u, w)[2]:
                     coste_minimo[w] = self.obtener_arista(u, w)[2]
@@ -271,14 +267,17 @@ class Grafo:
         de los pares de vértices del grafo
         que forman las aristas del arbol abarcador mínimo.
         """
-        l = self.aristas
         aristas = []
         c = {}
         for v in self.vertices:
             c[v] = {v}
+        l = []
+        for ar, data in self.aristas.items():
+            ar = (ar[0].id, ar[1].id)
+            heapq.heappush(l, (data['weight'], ar))
         while l:
-            l = sorted(l, key=lambda x: x[2]['weight'])
-            a = l.pop(0)
+            _, a = heapq.heappop(l)
+            a = (self.vertices_ids[a[0]], self.vertices_ids[a[1]])
             if c[a[0]] != c[a[1]]:
                 aristas.append((a[0], a[1]))
                 c[a[0]] = c[a[0]] | c[a[1]]
@@ -304,7 +303,7 @@ class Grafo:
         else:
             G2 = nx.Graph()
         G2.add_nodes_from([i for i in self.vertices_ids])
-        G2.add_edges_from([(i.id,j.id,data) for (i,j,data) in self.aristas])
+        G2.add_edges_from([(i.id,j.id,data) for (i,j), data in self.aristas.items()])
         
         return G2
 

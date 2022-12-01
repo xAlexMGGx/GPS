@@ -50,6 +50,7 @@ gr.agregar_arista(g,h,weight=16)
 gr.agregar_arista(i,h,weight=3)
 
 print([f'{key.id}: {value.id}' for key,value in gr.prim().items() if value is not None])
+print('kurksal')
 print([(i.id, j.id) for (i,j) in gr.kruskal()])
 print([f'{key.id}: {value.id}' for key,value in gr.dijkstra(a).items() if value is not None])
 
