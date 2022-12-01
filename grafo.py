@@ -28,10 +28,10 @@ class Grafo:
         """
         self.dirigido = dirigido
         self.vertices_ids = {}
-        self.aristas = []
-        self.aristas2 = {}
+        self.aristas = {}
         self.vertices_coords = {}
         self.vertices = []
+        self.matriz_adyacencia = {}
 
     #### Operaciones básicas del TAD ####
     def es_dirigido(self) -> bool:
@@ -50,6 +50,7 @@ class Grafo:
         """
         self.vertices_ids[v.id]= v
         self.vertices.append(v)
+        self.matriz_adyacencia[v] = set()
         if v.coordenadas:
             self.vertices_coords[v.coordenadas] = v
         return None
@@ -67,8 +68,11 @@ class Grafo:
             weight: peso de la arista
         Returns: None
         """
-        self.aristas.append((s, t, {"codigo": data['codigo'], "calle": data['calle'], "weight": weight}))
-        self.aristas2[(s, t)] = {"codigo": data['codigo'], "calle": data['calle'], "weight": weight}
+        if s in self.vertices and t in self.vertices:
+            self.aristas[(s, t)] = {"codigo": data['codigo'], "calle": data['calle'], "weight": weight}
+            self.matriz_adyacencia[s].add(t)
+            if not self.dirigido:
+                self.matriz_adyacencia[t].add(s)
         return None
 
     def eliminar_vertice(self, v: object) -> None:
@@ -112,10 +116,10 @@ class Grafo:
         "w" si la arista existe. None en caso contrario.
         """
         
-        if (s,t) in self.aristas2:
-            return (self.aristas2[(s,t)]["codigo"], self.aristas2[(s,t)]["calle"], self.aristas2[(s,t)]["weight"])
-        if (t,s) in self.aristas2:
-            return (self.aristas2[(t,s)]["codigo"], self.aristas2[(t,s)]["calle"], self.aristas2[(t,s)]["weight"])
+        if (s,t) in self.aristas:
+            return (self.aristas[(s,t)]["codigo"], self.aristas[(s,t)]["calle"], self.aristas[(s,t)]["weight"])
+        if (t,s) in self.aristas:
+            return (self.aristas[(t,s)]["codigo"], self.aristas[(t,s)]["calle"], self.aristas[(t,s)]["weight"])
         return None
 
     def lista_adyacencia(self, u: object) -> List[object] or None:
@@ -130,7 +134,7 @@ class Grafo:
         """
         if u in self.vertices:
             lista_adyacencia = []
-            for arista in self.aristas2:
+            for arista in self.aristas:
                 if u in arista:
                     lista_adyacencia.append(arista[1]) if u == arista[0] else lista_adyacencia.append(arista[0])
             return lista_adyacencia
@@ -205,7 +209,7 @@ class Grafo:
                 return padre
             if visitados[u] == False:
                 visitados[u] = True
-                lst_u = self.lista_adyacencia(u)
+                lst_u = self.matriz_adyacencia[u]
                 for v in lst_u:
                     if visitados[v] == False:
                         dist_uv = self.obtener_arista(u, v)[2]
