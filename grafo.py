@@ -8,10 +8,9 @@ import heapq
 INFTY = sys.float_info.max
 
 class Vertice:
-    def __init__(self, id=None, calles=[], nodos_adyacentes=[], coordenadas=()):
+    def __init__(self, id=None, calles=[], coordenadas=()):
         self.id = id
         self.calles = calles
-        self.nodos_adyacentes = nodos_adyacentes
         self.coordenadas = coordenadas
 
 
