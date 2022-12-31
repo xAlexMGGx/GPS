@@ -353,38 +353,40 @@ if __name__ == '__main__':
 #       TERMINADO
 #       
 # 2) Permitira al usuario seleccionar dos direcciones (origen y destino) de la base de datos de direcciones ("direcciones.csv").
-#       INTERFAZ DE ELEGIR CALLES
+#       TERMINADO
 # 
 # 3) Permitira elegir al usuario si desea encontrar la ruta mas corta o mas rapida entre estos puntos.
-#       DESPUES DE HACER EL PUNTO 1, 
+#       TERMINADO
 # 
 # 4) Usando el grafo correspondiente en funcion de lo elegido en el punto (3), se calculara el camino minimo desde el
 # origen al destino. Para ello, se deberan usar las funciones programadas en grafo.py.
-#       DICKSTRAIGHT CON EL GRAFO SELECCIONADO
+#       TERMINADO
 # 
 # 5) La aplicacion analizara dicho camino y construira una lista de instrucciones detalladas que permitan a un automovil
 # navegar desde el origen hasta el destino.
-#       A HACER, DEF INSTRUCCIONES()
+#       TERMINADO, angulo?
 # 
 # 6) Finalmente, usando NetworkX, se mostrara la ruta elegida resaltada sobre el grafo del callejero.
-#       SHOW_SHORTEST_PATH()
+#       TERMINADO
 # 
 # 7) Tras mostrar la ruta, se volvera al punto 2 para seleccionar una nueva ruta hasta que se introduzca un origen o
 # destino vacios.
 #       PARTE DE LA INTERFAZ PARA PARAR EL BUCLE
 # 
 # Cuanta distancia (en metros) se debe continuar por cada via antes de tomar un giro hacia otra calle.
-#       
+#       por ver
 #       
 # Al tomar un desvio, cual sera el nombre de la siguiente calle por la que se debera circular.
-#       
+#       TERMINADO
+# 
 # A la hora de girar, si se debe girar a la izquierda o a la derecha. Opcionalmente, si hay un cruce multiple, se precisara
 # por que salida debe continuarse.
-#       
+#       jaja
+# 
 # El navegador no deberia dar instrucciones redundantes mientras se continue por la misma calle (mas alla de continuar
 # por dicha calle X metros).
-#       
-
+#       perfe
+# 
 # CUANDO CAMBIEMOS DE CALLE, NOS GUARDAMOS EN UN SET LOS NODOS DE DICHA CALLE. BUSCAMOS EN LOS NODOS QUE NOS QUEDAN
 # POR RECORRER HASTA QUE ENCONTREMOS EL QUE NO ESTÁ EN EL SET. EN ESE CASO, CALCULAMOS LA DISTANCIA ENTRE EL
 # NODO ACTUAL Y EL ÚLTIMO NODO QUE ESTÁ EN EL SET, Y TAMBIÉN CALCULAMOS SI HABRÁ QUE GIRAR A DERECHA O IZQUIERDA.

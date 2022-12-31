@@ -83,7 +83,7 @@ class Grafo:
         """
         if v in self.vertices:
             self.vertices_ids.pop(v.id)
-            self.vertices.pop(v)
+            self.vertices.remove(v)
             if v.coordenadas:
                 self.vertices_coords.pop(v.coordenadas)
         return None
@@ -98,9 +98,10 @@ class Grafo:
             t: vértice de destino de la arista
         Returns: None
         """
-        for arista in self.aristas:
-            if s in arista and t in arista:
-                self.aristas.remove(arista)
+        if (s,t) in self.aristas:
+            self.aristas.pop((s,t))
+        elif (t,s) in self.aristas:
+            self.aristas.pop((t,s))
         return None
 
     def obtener_arista(self, s: object, t: object) -> Tuple[object, float] or None:
