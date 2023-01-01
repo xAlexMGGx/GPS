@@ -84,6 +84,7 @@ class Grafo:
         if v in self.vertices:
             self.vertices_ids.pop(v.id)
             self.vertices.remove(v)
+            self.matriz_adyacencia.pop(v)
             if v.coordenadas:
                 self.vertices_coords.pop(v.coordenadas)
         return None
@@ -102,6 +103,9 @@ class Grafo:
             self.aristas.pop((s,t))
         elif (t,s) in self.aristas:
             self.aristas.pop((t,s))
+        self.matriz_adyacencia[s].pop(t)
+        if not self.dirigido:
+            self.matriz_adyacencia[t].pop(s)
         return None
 
     def obtener_arista(self, s: object, t: object) -> Tuple[object, float] or None:
