@@ -257,7 +257,8 @@ def comprobar_numero(numero, direccion):
     return None, None, None, None
 
 
-def draw_street(x, G2, G):
+def draw_street(calle_posible, G2, G):
+    x = direcciones[direcciones['Nombre completo de calle'] == calle_posible]['Codigo de via'].values[0]
     aristas = [(arista[0], arista[1], data) for arista, data in G.aristas.items() if data['codigo'] == x]
     nodos = []
     for a in aristas:
@@ -267,15 +268,16 @@ def draw_street(x, G2, G):
     calle = nx.Graph()
     calle.add_nodes_from(nodos)
     calle.add_edges_from([(u.id, v.id, data) for (u, v, data) in aristas])
-    plt.figure(figsize=(100, 100))
+    plt.figure(figsize=(150, 150))
     plt.plot()
     pos = {}
     for coords, v in G.vertices_coords.items():
         pos[v.id] = coords
-    nx.draw(G2, with_labels=False, pos=pos, node_size=10)
+    nx.draw(G2, with_labels=False, pos=pos, node_size=1)
     nx.draw(calle, with_labels=False, pos=pos,
-            node_size=10, edge_color='r', width=5)
-    plt.show()
+            node_size=1, edge_color='r', width=3)
+    # plt.show()
+    plt.savefig(f'{calle_posible}.png')
 
 
 def instrucciones(camino, G: gf.Grafo):
@@ -348,10 +350,13 @@ def menu():
 
 def main():
     global cruces, direcciones, c, d, posibles_calles
+    print('Extrayendo los datos...')
     cruces, direcciones = extract()
+    print('Limpiando los datos...')
     cruces, direcciones = clean(cruces, direcciones)
     cruces = unify_vertices(cruces)
     c, d = select_relevant_info(cruces, direcciones)
+    print('Creando el grafo...')
     c = assign_vertices(c, d)
     G_time = create_graph(cruces, c, 'tiempo')
     G_distance = create_graph(cruces, c, 'distancia')
@@ -494,21 +499,26 @@ def main():
             # print(G.vertices_ids)
             camino = G.camino_minimo(origen_actual, destino_actual)
             instrucciones(camino, G)
-
+            peso = 0
+            for i in range(len(camino)-1):
+                peso += G.obtener_arista(camino[i], camino[i+1])[2]
+            medida = {'c': 'metros', 'r': 'minutos'}
+            print(f'\nHan transcurrido {peso} {medida[type_graph]}.')
             G2 = G.convertir_a_NetworkX()
             aam = nx.Graph()
             aam.add_nodes_from([i.id for i in camino])
             aam.add_edges_from([(camino[i].id, camino[i+1].id)
                                 for i in range(len(camino)-1)])
-            plt.figure(figsize=(100, 100))
+            plt.figure(figsize=(150, 150))
             plt.plot()
             pos = {}
             for coords, v in G.vertices_coords.items():
                 pos[v.id] = coords
-            nx.draw(G2, with_labels=False, pos=pos, node_size=10)
+            nx.draw(G2, with_labels=False, pos=pos, node_size=1)
             nx.draw(aam, with_labels=False, pos=pos,
-                    node_size=10, edge_color='r', width=5)
-            plt.show()
+                    node_size=1, edge_color='r', width=3)
+            plt.savefig(f'Camino entre {origen_posible} {numero_origen} y {destino_posible} {numero_destino}.png')
+            # plt.show()
 
             # Al final del while, debemos borrar tanto las aristas como los nodos creados
             for a in aristas_origen:
@@ -519,13 +529,15 @@ def main():
             G.eliminar_vertice(destino_actual)
         elif opc == 2:
             G = G_distance.convertir_a_NetworkX()
-            plt.figure(figsize=(100, 100))
+            plt.figure(figsize=(150, 150))
             plt.plot()
             pos = {}
             for coords, v in G_distance.vertices_coords.items():
                 pos[v.id] = coords
-            nx.draw(G, with_labels=False, pos=pos, node_size=10)
+            nx.draw(G, with_labels=False, pos=pos, node_size=1)
             plt.show()
+            # plt.show()
+            plt.savefig('Mapa de Madrid.png')
         elif opc == 3:
             calle = input('Elige la dirección de calle: ')
             if len(calle) == 0:
@@ -543,9 +555,8 @@ def main():
             if consultar_calle == 'n':
                 print('Introduce de nuevo la calle de origen')
                 continue
-            codigo_calle = direcciones[direcciones['Nombre completo de calle'] == calle_posible]['Codigo de via'].values[0]
             G = G_distance.convertir_a_NetworkX()
-            draw_street(codigo_calle, G, G_distance)
+            draw_street(calle_posible, G, G_distance)
         elif opc == 4:
             end = True
     exit()
