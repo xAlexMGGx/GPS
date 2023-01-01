@@ -103,9 +103,9 @@ class Grafo:
             self.aristas.pop((s,t))
         elif (t,s) in self.aristas:
             self.aristas.pop((t,s))
-        self.matriz_adyacencia[s].pop(t)
+        self.matriz_adyacencia[s].remove(t)
         if not self.dirigido:
-            self.matriz_adyacencia[t].pop(s)
+            self.matriz_adyacencia[t].remove(s)
         return None
 
     def obtener_arista(self, s: object, t: object) -> Tuple[object, float] or None:
