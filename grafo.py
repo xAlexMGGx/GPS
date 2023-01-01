@@ -16,7 +16,6 @@ class Vertice:
 
 class Grafo:
     # Diseñar y construirl a clase grafo
-
     def __init__(self, dirigido=False, vertices_ids={}, aristas=[], vertices_coords={}):
         """ Crea un grafo dirigido o no dirigido.
 
@@ -290,8 +289,6 @@ class Grafo:
             for w in c[a[0]]:
                 c[w] = c[a[0]]
         return aristas
-
-
 
     #### NetworkX ####
     def convertir_a_NetworkX(self) -> nx.Graph or nx.DiGraph:
