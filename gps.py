@@ -287,7 +287,7 @@ def instrucciones(camino, G: gf.Grafo):
     for i, node in enumerate(camino[:-1]):
         if instr[i+1] == '':
             if i != len(camino) - 1:
-                calle_actual = G.obtener_arista(node, camino[i+1])[0]
+                calle_actual = G.obtener_arista(node, camino[i+1])[0]['codigo']
                 cruces_calle = {x for x in camino if calle_actual in x.calles}
             for j in range(i+1, len(camino)):
                 if camino[j] not in cruces_calle:
@@ -307,9 +307,9 @@ def instrucciones(camino, G: gf.Grafo):
         if instr[i] == 'T':
             print('Ha llegado a su destino')
         elif instr[i] == 'R':
-            arista_actual = G.obtener_arista(node, camino[i+1])
-            codigo_actual = arista_actual[0]
-            calle_actual = arista_actual[1]
+            arista_actual = G.obtener_arista(node, camino[i+1])[0]
+            codigo_actual = arista_actual['codigo']
+            calle_actual = arista_actual['calle']
             cruces_calle = {x for x in camino if codigo_actual in x.calles}
             for j in range(i+1, len(camino)):
                 if camino[j] not in cruces_calle:
@@ -317,15 +317,15 @@ def instrucciones(camino, G: gf.Grafo):
             print(
                 f'Siga recto por la {calle_actual} durante {distance(node.coordenadas, camino[j].coordenadas)//100} metros.')
         elif instr[i] == 'I':
-            calle_actual = G.obtener_arista(node, camino[i+1])[1]
+            calle_actual = G.obtener_arista(node, camino[i+1])[0]['calle']
             print(f'Gire a la izquierda en la {calle_actual}')
         elif instr[i] == 'D':
-            calle_actual = G.obtener_arista(node, camino[i+1])[1]
+            calle_actual = G.obtener_arista(node, camino[i+1])[0]['calle']
             print(f'Gire a la derecha en la {calle_actual}')
 
 
 def menu():
-    os.system('cls')
+    os.system('cls||clear')
     print(
         '\n' + '▒'*122,
         '\n' + '▒'*122,
@@ -501,8 +501,8 @@ def main():
             instrucciones(camino, G)
             peso = 0
             for i in range(len(camino)-1):
-                peso += G.obtener_arista(camino[i], camino[i+1])[2]
-            medida = {'c': 'metros', 'r': 'minutos'}
+                peso += G.obtener_arista(camino[i], camino[i+1])[1]
+            medida = {'distancia': 'metros', 'tiempo': 'minutos'}
             print(f'\nHan transcurrido {peso} {medida[type_graph]}.')
             G2 = G.convertir_a_NetworkX()
             aam = nx.Graph()
