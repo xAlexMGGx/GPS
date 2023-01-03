@@ -178,7 +178,7 @@ def create_graph(cruces, c, type_graph):
     G = gf.Grafo(False, {}, [], {})
     id = 1
     last = None
-    for idx, row in c.iterrows():
+    for _, row in c.iterrows():
         coords = (row['x'], row['y'])
         if coords in G.vertices_coords:
             vertice_actual = G.vertices_coords[coords]
@@ -315,7 +315,7 @@ def instrucciones(camino, G: gf.Grafo):
                 if camino[j] not in cruces_calle:
                     break
             print(
-                f'Siga recto por la {calle_actual} durante {distance(node.coordenadas, camino[j].coordenadas)//100} metros.')
+                f'Siga recto por la {calle_actual} durante {distance(node.coordenadas, camino[j-1].coordenadas)//100} metros.')
         elif instr[i] == 'I':
             calle_actual = G.obtener_arista(node, camino[i+1])[1]
             print(f'Gire a la izquierda en la {calle_actual}')
@@ -376,11 +376,11 @@ def main():
             numero_origen = origen[-1]
             origen_posible = comprobar_direccion(origen)
             consultar_origen = input(
-                '¿Quieres salir de {}? (s/n)'.format(origen_posible))
+                '¿Quieres salir de {}? (s/n): '.format(origen_posible))
             while consultar_origen not in ['s', 'n']:
                 print('Entrada incorrecta')
                 consultar_origen = input(
-                    '¿Quieres salir de {}? (s/n)'.format(origen_posible))
+                    '¿Quieres salir de {}? (s/n): '.format(origen_posible))
             if consultar_origen == 'n':
                 print('Introduce de nuevo la calle de origen')
                 continue
@@ -399,11 +399,11 @@ def main():
             numero_destino = destino[-1]
             destino_posible = comprobar_direccion(destino)
             consultar_destino = input(
-                '¿Quieres ir a {}? (s/n)'.format(destino_posible))
+                '¿Quieres ir a {}? (s/n): '.format(destino_posible))
             while consultar_destino not in ['s', 'n']:
                 print('Entrada incorrecta')
                 consultar_destino = input(
-                    '¿Quieres ir a {}? (s/n)'.format(destino_posible))
+                    '¿Quieres ir a {}? (s/n): '.format(destino_posible))
             if consultar_destino == 'n':
                 print('Introduce de nuevo la calle de destino')
                 continue
@@ -415,10 +415,10 @@ def main():
                 continue
 
             # Preguntamos que tipo de ruta queremos
-            tipo_ruta = input('¿Quieres una ruta corta o rápida? (c/r)')
+            tipo_ruta = input('¿Quieres una ruta corta o rápida? (c/r): ')
             while tipo_ruta not in ['c', 'r']:
                 print('Entrada incorrecta')
-                tipo_ruta = input('¿Quieres una ruta corta o rápida? (c/r)')
+                tipo_ruta = input('¿Quieres una ruta corta o rápida? (c/r): ')
             if tipo_ruta == 'c':
                 G = G_distance
                 type_graph = 'distancia'
@@ -498,12 +498,14 @@ def main():
 
             # print(G.vertices_ids)
             camino = G.camino_minimo(origen_actual, destino_actual)
+            os.system('cls')
+            print('RUTA ENCONTRADA:')
             instrucciones(camino, G)
             peso = 0
             for i in range(len(camino)-1):
                 peso += G.obtener_arista(camino[i], camino[i+1])[2]
-            medida = {'c': 'metros', 'r': 'minutos'}
-            print(f'\nHan transcurrido {peso} {medida[type_graph]}.')
+            medida = {'c': 'kilómetros', 'r': 'minutos'}
+            print(f'\nHan transcurrido {peso} {medida[tipo_ruta]}.')
             G2 = G.convertir_a_NetworkX()
             aam = nx.Graph()
             aam.add_nodes_from([i.id for i in camino])
@@ -547,11 +549,11 @@ def main():
             calle = calle.split(' ')
             calle_posible = comprobar_direccion(calle)
             consultar_calle = input(
-                '¿Quieres visualizar {}? (s/n)'.format(calle_posible))
+                '¿Quieres visualizar {}? (s/n): '.format(calle_posible))
             while consultar_calle not in ['s', 'n']:
                 print('Entrada incorrecta')
                 consultar_calle = input(
-                    '¿Quieres visualizar {}? (s/n)'.format(calle_posible))
+                    '¿Quieres visualizar {}? (s/n): '.format(calle_posible))
             if consultar_calle == 'n':
                 print('Introduce de nuevo la calle de origen')
                 continue
