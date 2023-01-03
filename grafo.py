@@ -120,9 +120,9 @@ class Grafo:
         """
         
         if (s,t) in self.aristas:
-            return (self.aristas[(s,t)]["codigo"], self.aristas[(s,t)]["calle"], self.aristas[(s,t)]["weight"])
+            return (self.aristas[(s,t)], self.aristas[(s,t)]["weight"])
         if (t,s) in self.aristas:
-            return (self.aristas[(t,s)]["codigo"], self.aristas[(t,s)]["calle"], self.aristas[(t,s)]["weight"])
+            return (self.aristas[(t,s)], self.aristas[(t,s)]["weight"])
         return None
 
     def lista_adyacencia(self, u: object) -> List[object] or None:
@@ -206,7 +206,7 @@ class Grafo:
                 lst_u = self.matriz_adyacencia[u]
                 for v in lst_u:
                     if visitados[v] == False:
-                        dist_uv = self.obtener_arista(u, v)[2]
+                        dist_uv = self.obtener_arista(u, v)[1]
                         if distancia[v] > distancia[u] + dist_uv:
                             distancia[v] = distancia[u] + dist_uv
                             padre[v] = u
@@ -254,9 +254,9 @@ class Grafo:
             q_ids = {i[1] for i in q}
             for w in set(self.lista_adyacencia(u)):
                 if w.id in q_ids:
-                    if coste_minimo[w] > self.obtener_arista(u, w)[2]:
+                    if coste_minimo[w] > self.obtener_arista(u, w)[1]:
                         q.remove((coste_minimo[w], w.id))
-                        coste_minimo[w] = self.obtener_arista(u, w)[2]
+                        coste_minimo[w] = self.obtener_arista(u, w)[1]
                         padre[w] = u
                         heapq.heappush(q, (coste_minimo[w], w.id))
         return padre
