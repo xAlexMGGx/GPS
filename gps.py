@@ -25,7 +25,7 @@ def distance(a, b):
     return np.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
 
 
-def clean(cruces, direcciones):
+def clean(cruces: pd.DataFrame, direcciones: pd.DataFrame):
     # Quitamos los espacios innecesarios de los datasets
     for df in [cruces, direcciones]:
         for column in df.columns:
