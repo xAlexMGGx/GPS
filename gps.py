@@ -376,7 +376,6 @@ def main():
             print('Introduzca las calles de la siguiente manera: Calle X')
             origen = input('Elige la dirección de origen: ')
             if len(origen) == 0:
-                end = True
                 continue
             origen = origen.split(' ')
             numero_origen = origen[-1]
@@ -399,7 +398,6 @@ def main():
 
             destino = input('Elige la dirección de destino: ')
             if len(destino) == 0:
-                end = True
                 continue
             destino = destino.split(' ')
             numero_destino = destino[-1]
@@ -549,7 +547,6 @@ def main():
         elif opc == 3:
             calle = input('Elige la dirección de calle: ')
             if len(calle) == 0:
-                end = True
                 continue
             calle += ' 0' # Para la función de comprobar_direccion donde le metemos la calle y el número
             calle = calle.split(' ')
