@@ -5,8 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+import signal
 import warnings
 warnings.filterwarnings('ignore')
+
+
+def handler_signal(signum, frame):
+    print('Saliendo por interrupción...')
+    exit(0)
 
 
 def extract():
@@ -565,4 +571,5 @@ def main():
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, handler_signal)
     main()
