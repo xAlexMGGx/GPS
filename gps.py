@@ -18,8 +18,7 @@ def handler_signal(signum, frame):
 def extract():
     cruces = pd.read_csv('cruces.csv', sep=';', encoding='latin1')
     direcciones = pd.read_csv('direcciones.csv', sep=';', encoding='latin1')
-    direcciones = direcciones[direcciones['Coordenada X (Guia Urbana) cm']
-                              != '000000-100']
+    direcciones = direcciones[direcciones['Coordenada X (Guia Urbana) cm'] != '000000-100']
     direcciones['Coordenada X (Guia Urbana) cm'] = direcciones['Coordenada X (Guia Urbana) cm'].astype(
         'int64')
     direcciones['Coordenada Y (Guia Urbana) cm'] = direcciones['Coordenada Y (Guia Urbana) cm'].astype(
