@@ -541,7 +541,6 @@ def main():
             for coords, v in G_distance.vertices_coords.items():
                 pos[v.id] = coords
             nx.draw(G, with_labels=False, pos=pos, node_size=1)
-            plt.show()
             # plt.show()
             plt.savefig('Mapa de Madrid.png')
         elif opc == 3:
